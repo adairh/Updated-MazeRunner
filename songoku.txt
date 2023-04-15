@@ -1,0 +1,10 @@
+left 1.00
+left 0.00
+left 0.00
+left 0.00
+left 0.00
+left 0.81
+left 0.00
+up 0.00
+up 0.00
+up 0.98

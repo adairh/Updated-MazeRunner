@@ -1,0 +1,1 @@
+{"width": 15, "height": 15, "obstacles": [[0, 1], [1, 1], [2, 1]], "bots": [{"name": "conan", "pos": [5, 1], "status": "stop", "score": 10}, {"name": "songoku", "pos": [0, 0], "status": "move", "score": 4}], "coin": [0, 0], "screen": true}
