@@ -1,3 +1,5 @@
+import heapq
+import math
 from typing import List
 
 from Bot import Bot
@@ -22,6 +24,7 @@ class Map:
         self.loadLocs()
         self.loadMap()
         # self.printMap()
+        # print(self.findCenter())
 
     def loadJson(self):
         #with open(self.inputFile, 'r') as file:
@@ -63,3 +66,54 @@ class Map:
             print('*', end='')
             print()
         print('*' * (self.width + 2))
+    def dijkstra(self, temp, start):
+        m, n = self.height, self.width
+        distances = [[math.inf for _ in range(n)] for _ in range(m)]
+        distances[start[0]][start[1]] = 0
+        pq = [(0, start)]
+        while pq:
+            (curr_dist, (curr_row, curr_col)) = heapq.heappop(pq)
+            if curr_dist > distances[curr_row][curr_col]:
+                continue
+            for (dr, dc) in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+                r, c = curr_row + dr, curr_col + dc
+                if 0 <= r < m and 0 <= c < n and temp[r][c] != '*':
+                    weight = 1
+                    distance = curr_dist + weight
+                    if distance < distances[r][c]:
+                        distances[r][c] = distance
+                        heapq.heappush(pq, (distance, (r, c)))
+        return distances
+
+    def findCenter(self):
+        med = 0
+        for i in [[0, 0], [0, self.width-1], [self.height-1, 0], [self.height-1, self.width-1]]:
+            temp = self.matrix
+            for a in range(2):
+                for b in range(2):
+                    x, y = i[0] + a, i[1] + b
+                    if 0 < x < self.height and 0 < y < self.width:
+                        temp[x][y] = " "
+
+            distances = self.dijkstra(temp, i)
+            smed = 0
+            csmed = 0
+            for row in distances:
+                for col in row:
+                    if not math.isinf(col):
+                        csmed += 1
+                        smed += col
+                    print(row)
+                print("")
+            med += (smed / csmed)
+        print(med)
+        med = (med/4)//1
+        q = 0
+        w = 0
+        for row in distances:
+            for col in row:
+                if col == med:
+                    return [q, w]
+                w += 1
+            q += 1
+

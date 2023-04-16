@@ -57,14 +57,15 @@ class Bot:
     def moveBot(self, loc: Location):
 
         if loc not in self.map.obstacles and loc not in self.getOccupiedSlot():
+            if loc == self.map.coin.loc:
+                self.score += 1
+                botLoc = [loc]
+                botLoc = botLoc + self.getOccupiedSlot()
+                self.map.coin.loc.x, self.map.coin.loc.y = self.map.coin.generate_random_position(
+                    self.map.obstacles + botLoc)
+                # sound.maze_sound().sound_ate()
             # self.loc = loc
             # self.printMap()
-            return True
-        elif loc in self.map.coin.loc:
-            self.score += 1
-            botLoc = [loc]
-            botLoc = botLoc + self.getOccupiedSlot()
-            self.map.coin.loc.x, self.map.coin.loc.y = self.map.coin.generate_random_position(self.map.obstacles + botLoc)
             return True
         else:
             return False
@@ -136,5 +137,5 @@ class Bot:
             return self.left()
         elif step == 'right':
             return self.right()
-        print("INVALID STEP: " + str(step))
+        #print("INVALID STEP: " + str(step))
         return False

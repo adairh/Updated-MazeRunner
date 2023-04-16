@@ -16,12 +16,12 @@ class AStarFinder:
         return abs(a.x - b.x) + abs(a.y - b.y)
 
     @staticmethod
-    def get_neighbors(node: Node, m: Map):
+    def get_neighbors(node: Node, m: Map, exObs):
         neighbors = []
         for x_offset, y_offset in [(-1, 0), (0, -1), (1, 0), (0, 1)]:
             neighbor_location = Location(node.location.x + x_offset, node.location.y + y_offset)
 
-            if neighbor_location in m.obstacles \
+            if neighbor_location in m.obstacles or neighbor_location in exObs \
                     or neighbor_location.x < 0 or neighbor_location.x >= m.height \
                     or neighbor_location.y < 0 or neighbor_location.y >= m.width:
                 continue
@@ -29,7 +29,7 @@ class AStarFinder:
             neighbors.append(neighbor_node)
         return neighbors
 
-    def find_path(self, m: Map, bot):
+    def find_path(self, m: Map, bot, exObs):
         if m.coin is None:
             return None
         start_node = Node(location=bot.loc, g_score=0,
@@ -47,7 +47,7 @@ class AStarFinder:
 
             self.closed_set.add(current_node)
 
-            for neighbor in self.get_neighbors(current_node, m):
+            for neighbor in self.get_neighbors(current_node, m, exObs):
                 if neighbor in self.closed_set:
                     continue
 

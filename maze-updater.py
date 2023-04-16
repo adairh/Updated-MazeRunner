@@ -21,6 +21,7 @@ def write_json_file(file_name, data):
         json.dump(data, file)
 
 
+
 def get_latest_input_lines(input_files):
     lines = []
     for file_name in input_files:
@@ -43,8 +44,10 @@ def move_bot(bot, direction, occupied_slots):
     if new_pos not in occupied_slots:
         bot["pos"] = new_pos
         bot["status"] = "move"
+        return True
     else:
         bot["status"] = "eliminated"
+        return False
 
 
 def get_occupied_slots(bots):
@@ -56,7 +59,7 @@ input_files = args.input
 output_file = args.output
 
 while True:
-    time.sleep(5)
+    time.sleep(0.1)
     # Wait for input files to have content
     while not any(os.stat(file_name).st_size != 0 for file_name in input_files):
         time.sleep(0.1)
@@ -70,25 +73,27 @@ while True:
             data = read_json_file("maze_metadata.json")
             break
         except ValueError:
-            pass  # Ignore JSON decoding errors
+            pass
         except FileNotFoundError:
             print(f"Error: maze_metadata.json not found")
             exit()
 
     # Check if any bot can move
+    alive = True
     if not any(bot["status"] == "move" for bot in data["bots"]):
         occupied_slots = get_occupied_slots(data["bots"])
-        print("[")
+        print("")
         for item in input_lines:
             bot = next((bot for bot in data["bots"] if bot["name"] == item[0]), None)
             if bot:
-                move_bot(bot, item[1], occupied_slots)
+                alive = move_bot(bot, item[1], occupied_slots)
                 print("Move bot: " + str(bot) + " " + str(item))
                 occupied_slots = get_occupied_slots(data["bots"])
-        print("]")
-
+        print("")
 
     # Update maze metadata
     write_json_file("maze_metadata.json", data)
-
+    if not alive:
+        break
+exit()
     # Wait for user input

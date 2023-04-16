@@ -16,11 +16,16 @@ matrix = [[' ' for _ in range(num_cols)] for _ in range(num_rows)]
 
 # fill in the matrix with characters from the file
 string = ''
+space_count = 0
 
 for i in range(num_rows):
     for j in range(len(lines[i])):
         matrix[i][j] = lines[i][j]
-        string += '[' + str(i) + ',' + str(j) + '],'
+        if lines[i][j] == 'x':
+            string += '[' + str(i) + ',' + str(j) + '],'
+        if lines[i][j] == ' ':
+            space_count += 1
 
-# print the matrix for verification
+# print the matrix and space count for verification
 print(string)
+print("Space count:", space_count)

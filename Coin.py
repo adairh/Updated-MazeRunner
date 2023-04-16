@@ -9,7 +9,6 @@ class Coin:
         self.loc: Location = coin
         self.x_range = [0, height-1]
         self.y_range = [0, width-1]
-        self.positions = set()
         # self.create_coins()
 
     # def create_coins(self):
@@ -25,13 +24,7 @@ class Coin:
 
             # Check if the coin is not on an obstacle
             if Location(x, y) not in avoiding:
-
-                # Check if the coin is not on the bot
-                if (x, y) not in self.positions:
-                    # Add the new coin position to the set of positions
-                    self.positions.add((x, y))
-                    # Return the valid coin position
-                    return x, y
+                return x, y
 
     def store_new_coin(self, inputFile, avoiding):
         with open(inputFile, 'r') as f:
@@ -42,8 +35,6 @@ class Coin:
             json.dump(data, f)
         return self.loc.x, self.loc.y
 
-    def __str__(self):
-        return f"Coins positions: {self.positions}"
 
 #
 # # Define the main function
