@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import random
 import time
 
 
@@ -58,6 +59,17 @@ args = parse_arguments()
 input_files = args.input
 output_file = args.output
 
+def generate_random_position(w, h, avoiding):
+    while True:
+        # Random x, y position for the coin
+        x = random.randint(0, h - 1)
+        y = random.randint(0, w - 1)
+
+        # Check if the coin is not on an obstacle
+        if [x, y] not in avoiding:
+            return x, y
+
+
 while True:
     time.sleep(0.1)
     # Wait for input files to have content
@@ -66,7 +78,7 @@ while True:
 
     # Read input files and sort by time
     input_lines = get_latest_input_lines(input_files)
-
+    print(input_lines)
     # Load maze metadata
     while True:
         try:
@@ -80,16 +92,24 @@ while True:
 
     # Check if any bot can move
     alive = True
+    obss = []
     if not any(bot["status"] == "move" for bot in data["bots"]):
-        occupied_slots = get_occupied_slots(data["bots"])
         print("")
         for item in input_lines:
             bot = next((bot for bot in data["bots"] if bot["name"] == item[0]), None)
+            obss.append(bot['pos'])
             if bot:
+                occupied_slots = get_occupied_slots(data["bots"])
                 alive = move_bot(bot, item[1], occupied_slots)
                 print("Move bot: " + str(bot) + " " + str(item))
                 occupied_slots = get_occupied_slots(data["bots"])
-        print("")
+
+    for bot in data['bots']:
+        if bot['pos'] == data['coin']:
+            bot['score'] += 1
+            obss = obss + data['obstacles']
+            cx, cy = generate_random_position(data['width'], data['height'], obss)
+            data['coin'] = [cx, cy]
 
     # Update maze metadata
     write_json_file("maze_metadata.json", data)

@@ -44,7 +44,6 @@ class BotRunner:
                         if self.path[-1] != m.coin.loc:
                             self.path = AStarFinder().find_path(m, bot, [])
                         if self.path[0] != bot.loc:
-                            print(self.path[0])
                             self.path = AStarFinder().find_path(m, bot, [])
                         self.path.remove(self.path[0])
                         if len(self.path) > 0:

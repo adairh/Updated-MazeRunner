@@ -34,7 +34,7 @@ class BotRunner:
                 data = json.load(file)
                 if data['screen']:
                     m = Map(data)
-                    bot = Bot(m, data).getBot("conan")
+                    bot = Bot(m, data).getBot("top")
                     m.addBot(bot)
                     if bot.getStatus() == "move":
                         start = datetime.datetime.now()
